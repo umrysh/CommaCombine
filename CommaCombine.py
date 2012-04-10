@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pygtk,gtk,csv
+import pygtk,gtk,csv,operator
 pygtk.require('2.0')
 
 arr = []
@@ -126,10 +126,18 @@ class mainScreen():
 		if len(self.dataArray) != 0:
 			### In case the user submitted no CSVs ###
 			### Sort the array ###
-
-
-
-
+			if self.sortCheck.get_active():
+				### Check if user gave a valid column
+				if self.sortspinner.get_value_as_int() <= len(self.dataArray[0]):
+					### We can sort ###
+					### Check if we are to remove the first row
+					if self.sort2Check.get_active():
+						a = self.dataArray[0]
+						self.dataArray.pop(0)
+						self.dataArray = sorted(self.dataArray, key=operator.itemgetter(self.sortspinner.get_value_as_int()-1))
+						self.dataArray.insert(0,a)
+					else:
+						self.dataArray = sorted(self.dataArray, key=operator.itemgetter(self.sortspinner.get_value_as_int()-1))
 			### Open Dialog asking user where they would like the new CSV stored ###
 			dialog = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE,buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
 			dialog.set_current_name("Output.csv")
@@ -212,6 +220,42 @@ class mainScreen():
 		main_vbox.pack_start(removeHeadings_hbox, True, False, 0)
 		removeHeadings_hbox.pack_start(self.removeHeadingsCheck, False, False, 0)
 		removeHeadings_hbox.pack_start(removeHeadingslabel, False, False, 0)
+
+		####Extra2#####
+		self.sortCheck = gtk.CheckButton()
+		self.sortCheck.set_active(False)
+		
+		sortlabel = gtk.Label("Sort data using column:")
+		sortlabel.set_alignment(0.5, 0.5)
+		sortlabel.set_line_wrap(True)
+
+
+		adj = gtk.Adjustment(6, 1.0, 999999.0, 1.0, 5.0, 0.0)
+		self.sortspinner = gtk.SpinButton(adj, 0, 0)
+		self.sortspinner.set_wrap(True)
+
+		sort2label = gtk.Label("Do not sort first row as this contains the headings.")
+		sort2label.set_alignment(0.5, 0.5)
+		sort2label.set_line_wrap(True)
+
+		sort2spacer = gtk.Label("     ")
+
+		self.sort2Check = gtk.CheckButton()
+		self.sort2Check.set_active(False)
+
+		sort_hbox = gtk.HBox(False, 5)
+		sort2_hbox = gtk.HBox(False, 5)
+
+		main_vbox.pack_start(sort_hbox, True, False, 0)
+		main_vbox.pack_start(sort2_hbox, True, False, 0)
+
+		sort_hbox.pack_start(self.sortCheck, False, False, 0)
+		sort_hbox.pack_start(sortlabel, False, False, 0)
+		sort_hbox.pack_start(self.sortspinner, False, False, 0)
+
+		sort2_hbox.pack_start(sort2spacer, False, False, 0)
+		sort2_hbox.pack_start(self.sort2Check, False, False, 0)
+		sort2_hbox.pack_start(sort2label, False, False, 0)
 
 		####Buttons#####
 		importButton = gtk.Button("Combine!")
