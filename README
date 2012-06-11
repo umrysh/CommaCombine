@@ -2,6 +2,9 @@ Welcome to CommaCombine
 
 CommaCombine will allow you to quickly combine multiple comma separated files into a single file. There is also the option to remove the first row (which usually contains the headings) from every subsequent file.
 
+*June 11 2012
+	You can now select and add multiple files at once.
+
 *April 10 2012
 	Added the functionality to sort the data by a user specified column before exporting (along with the option to remove the first row from being included in the sort).
 

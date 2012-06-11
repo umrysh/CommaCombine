@@ -33,21 +33,26 @@ class mainScreen():
 			(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
 			gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 		dialog.set_default_response(gtk.RESPONSE_OK)
+		dialog.set_select_multiple(True)
+
 		filter = gtk.FileFilter()
 		filter.set_name("CSV")
 		filter.add_pattern("*.csv")
 		dialog.add_filter(filter)
 		response = dialog.run()
 		if response == gtk.RESPONSE_OK:
-			csvpath = dialog.get_filename()
-			entryLOC.set_text(csvpath)
+			self.csvpath = dialog.get_filenames()
+			if len(self.csvpath) >1:
+				entryLOC.set_text("%s Files Selected." % len(self.csvpath))
+			else:
+				entryLOC.set_text(self.csvpath[0])
 		dialog.destroy()
 	def addCSV(self,widget,fileName):
 		### Test for blank and zero values
-
 		if 	fileName.get_text() != "":
 			global arr
-			arr.append(fileName.get_text())
+			for count in range (0,len(self.csvpath)):
+				arr.append(self.csvpath[count])
 			self.rebuild()
 	def deleteCSV(self,widget,count):
 		global arr
